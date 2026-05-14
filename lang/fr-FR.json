@@ -1,0 +1,14 @@
+{
+  "Options.SECTION[TreesReduceNoisePollution.Setting.Main]": "Principal",
+  "Options.GROUP[TreesReduceNoisePollution.Setting.General]": "Paramètres Généraux",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "Activer le Mod",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "Active la réduction du bruit par les arbres.",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "Force de Réduction",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "Quantité de bruit absorbée par chaque arbre.",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "Calcul de Réduction",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "Linéaire : Soustraction simple. Réaliste : Rendements décroissants.",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][0]": "Linéaire",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][1]": "Réaliste (Logarithmique)",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "Intervalle de mise à jour",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "Des valeurs plus élevées améliorent les performances."
+}

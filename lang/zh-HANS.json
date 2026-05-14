@@ -1,0 +1,14 @@
+{
+  "Options.SECTION[TreesReduceNoisePollution.Setting.Main]": "主菜单",
+  "Options.GROUP[TreesReduceNoisePollution.Setting.General]": "常规设置",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "启用模组",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "启用树木降噪功能。",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "降噪强度",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "每棵树吸收的噪音量。",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "计算模式",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "线性：简单减法。真实：递减收益。",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][0]": "线性",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][1]": "真实（对数）",
+  "Options.OPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "更新间隔（帧）",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "数值越高，性能越好。"
+}
