@@ -18,24 +18,20 @@
 
   This mode treats every tree as an equal contributor to noise reduction. It is best for players who want a significant, noticeable impact from every single sapling planted.
 
-  * Formula: R = N_trees * S_strength
-  * Result: 10 trees provide exactly 10x the reduction of 1 tree.
+  * Formula: Tree Count * (Strength Multiplier / 10 )
 
   ## 2. Realistic Mode (Logarithmic)
 
   In reality, noise absorption follows a diminishing returns curve. The first few trees do the most heavy lifting, and as the forest gets denser, each additional tree adds slightly less benefit.
 
-  * Formula: R = log2(N_trees + 1) * S_strength
-  * Result: Large forests still provide massive relief, but prevent the system from reaching zero noise too easily.
+  * Formula: log_2(TreeCount + 1) * Strength Multiplier
 
-  # How does this Mod work?
-
-  The mod utilizes the **Unity Job System** and **Burst Compiler** to stay highly optimized. It maps the coordinates of every tree on the map onto a 256 x 256 grid. It then calculates the tree density per cell and subtracts the calculated reduction directly from the game noise pollution buffer.
-
+  # How Does this Mod work?
+  If you're curious to see, please see the GitHub Repo with the full source code.
+  
   # Planned Future Features
-
   * Species-specific noise absorption (fully customisable).
-  * Age-specific noise absorption (fully customisable).
+  * Age-specific noise absorption Currently added but limited to ignoring Dead or Young/ Sapling.(fully customisable).
   * Further performance and optimisation improvements.
 
   # Support And Feedback
@@ -44,6 +40,8 @@
 
   Log File Location:
   C:\Users\%UserName%\AppData\LocalLow\Colossal Order\Cities Skylines II\Logs\TreesReduceNoisePollution.log]]>
+    
+  # Special Thanks to AABBCC for the Image; the Last two are AI generate tho, srry.   
   </LongDescription>
   <!--Thumbnail-->
   <Thumbnail Value="Properties/Thumbnail.png" />
@@ -59,7 +57,7 @@
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/treereducenoise-development.1921144/" />
   <!--Version of the mod-->
-  <ModVersion Value="3.0.62" />
+  <ModVersion Value="3.0.70" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
   <!--Dependency for the mod, can be set multiple times-->
@@ -72,6 +70,7 @@
   <!--External link, can be set multiple times.-->
   <!--ExternalLink Type="" Url="" /-->
   <ExternalLink Type="GitHub" Url="https://github.com/kepler444a-f/Trees-Reduce-Noise-Pollution" />
+  <ExternalLink Type="BuyMeACoffee" Url="https://buymeacoffee.com/kepler444f" />
   <!--Supported values Public, Private, Unlisted-->
   <AccessLevel Value="Public" />
 </Publish>
