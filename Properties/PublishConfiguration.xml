@@ -25,6 +25,12 @@
   In reality, noise absorption follows a diminishing returns curve. The first few trees do the most heavy lifting, and as the forest gets denser, each additional tree adds slightly less benefit.
 
   * Formula: log_2(TreeCount + 1) * Strength Multiplier
+  
+  # New Feature : Cell Bleedover
+  Previously the map was divided up into cells in which pollution was calculated per cell; this is still the case but I have now added a new method that applies a bleedover from cell to cell to make it more smooth and realistic.
+  The function for this is;
+  
+  Weight = 1.0 - (Distance / (Radius Control + 1))
 
   # How Does this Mod work?
   If you're curious to see, please see the GitHub Repo with the full source code.
