@@ -63,7 +63,7 @@
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/treereducenoise-development.1921144/" />
   <!--Version of the mod-->
-  <ModVersion Value="3.0.70" />
+  <ModVersion Value="4.2.17" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
   <!--Dependency for the mod, can be set multiple times-->
@@ -71,8 +71,7 @@
   <!--Required DLC, can be set multiple times.-->
   <!--RequiredDLC Value="" /-->
   <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-  <ChangeLog Value="Released Source Code on GitHub" />
-  <ChangeLog Value="Testing Resolution with Rider Publish Solution" />
+  <ChangeLog Value="Adding the new" />
   <!--External link, can be set multiple times.-->
   <!--ExternalLink Type="" Url="" /-->
   <ExternalLink Type="GitHub" Url="https://github.com/kepler444a-f/Trees-Reduce-Noise-Pollution" />

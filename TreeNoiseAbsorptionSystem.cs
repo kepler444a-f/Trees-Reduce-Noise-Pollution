@@ -3,10 +3,8 @@ using Game.Common;
 using Game.Objects;
 using Game.Simulation;
 using Game.Tools;
-using System.Threading;
 using Unity.Burst;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -56,17 +54,20 @@ namespace TreesReduceNoisePollution
 
             var noiseMap = m_NoiseSystem.GetMap(false, out var noiseDeps);
 
+            // Fast parallel job to reset density array values to 0
             var clearJob = new ClearDensityJob { m_Density = m_DensityMap };
-            var clearHandle = clearJob.Schedule(Dependency);
+            var clearHandle = clearJob.Schedule(m_DensityMap.Length, 64, Dependency);
 
+            // Run sequentially via .Schedule() to safely modify the array without unsafe pointers or Interlocked
             var countJob = new CountTreesJob
             {
                 m_Density = m_DensityMap,
                 m_MapSize = MAP_SIZE,
                 m_Size = TEXTURE_SIZE
             };
-            var countHandle = countJob.ScheduleParallel(m_TreeQuery, clearHandle);
+            var countHandle = countJob.Schedule(m_TreeQuery, clearHandle);
 
+            // Apply the actual noise reduction logic in parallel
             var applyJob = new ApplyReductionJob
             {
                 m_Noise = noiseMap,
@@ -74,7 +75,7 @@ namespace TreesReduceNoisePollution
                 m_DensitySize = TEXTURE_SIZE,
                 m_Strength = Mod.m_Setting.TreeNoiseStrength,
                 m_Mode = Mod.m_Setting.ReductionMode,
-                m_Radius = Mod.m_Setting.AbsorptionRadius // Passed setting here
+                m_Radius = Mod.m_Setting.AbsorptionRadius
             };
 
             JobHandle combinedDeps = JobHandle.CombineDependencies(countHandle, noiseDeps);
@@ -84,25 +85,24 @@ namespace TreesReduceNoisePollution
         }
 
         [BurstCompile]
-        public struct ClearDensityJob : IJob
+        public struct ClearDensityJob : IJobParallelFor
         {
-            public NativeArray<int> m_Density;
+            [WriteOnly] public NativeArray<int> m_Density;
             
-            public unsafe void Execute()
+            public void Execute(int index)
             {
-                UnsafeUtility.MemClear(m_Density.GetUnsafePtr(), m_Density.Length * sizeof(int));
+                m_Density[index] = 0;
             }
         }
 
         [BurstCompile]
         public partial struct CountTreesJob : IJobEntity
         {
-            [NativeDisableContainerSafetyRestriction]
             public NativeArray<int> m_Density;
             public float m_MapSize;
             public int m_Size;
 
-            public unsafe void Execute(in Game.Objects.Transform transform, in Tree tree)
+            public void Execute(in Game.Objects.Transform transform, in Tree tree)
             {
                 if ((tree.m_State & TreeState.Dead) != 0 || (tree.m_State & TreeState.Adult) == 0)
                     return;
@@ -115,8 +115,9 @@ namespace TreesReduceNoisePollution
                 if ((uint)x < (uint)m_Size && (uint)z < (uint)m_Size)
                 {
                     int index = x + (z * m_Size);
-                    int* ptr = (int*)m_Density.GetUnsafePtr();
-                    Interlocked.Increment(ref ptr[index]);
+                    
+                    // 100% safe direct arithmetic assignment since it's running sequentially
+                    m_Density[index] = m_Density[index] + 1;
                 }
             }
         }
@@ -143,7 +144,6 @@ namespace TreesReduceNoisePollution
 
                 float effectiveTreeCount = 0f;
 
-                // If Radius is 0, skip neighborhood kernel loop completely for speed
                 if (m_Radius <= 0)
                 {
                     int densityIndex = centerDensityX + (centerDensityZ * m_DensitySize);
@@ -151,7 +151,6 @@ namespace TreesReduceNoisePollution
                 }
                 else
                 {
-                    // Scan the 2D neighborhood bounding box
                     for (int offsetZ = -m_Radius; offsetZ <= m_Radius; offsetZ++)
                     {
                         for (int offsetX = -m_Radius; offsetX <= m_Radius; offsetX++)
@@ -159,7 +158,6 @@ namespace TreesReduceNoisePollution
                             int targetX = centerDensityX + offsetX;
                             int targetZ = centerDensityZ + offsetZ;
 
-                            // Direct array boundary safety checking
                             if (targetX >= 0 && targetX < m_DensitySize && targetZ >= 0 && targetZ < m_DensitySize)
                             {
                                 int neighborIndex = targetX + (targetZ * m_DensitySize);
@@ -167,16 +165,13 @@ namespace TreesReduceNoisePollution
 
                                 if (rawCount > 0)
                                 {
-                                    // Calculate Euclidean distance from center noise cell to sample cell
                                     float distance = math.sqrt(offsetX * offsetX + offsetZ * offsetZ);
 
                                     if (distance <= m_Radius)
                                     {
-                                        // Linear falloff: Closer cells provide higher strength modifiers
                                         float weight = 1.0f - (distance / (m_Radius + 1f));
                                         effectiveTreeCount += rawCount * weight;
                                     }
-                                    // Extreme edge protection: exact bounds fallback if diagonal float math slips past
                                     else if (offsetX == 0 || offsetZ == 0)
                                     {
                                         float weight = 1.0f - (distance / (m_Radius + 1f));
@@ -192,7 +187,6 @@ namespace TreesReduceNoisePollution
 
                 NoisePollution data = m_Noise[i];
                 
-                // Mathematical logic matches original parameters but uses weighted float counts
                 float reduction = (m_Mode == 1)
                     ? math.log2(effectiveTreeCount + 1f) * m_Strength
                     : effectiveTreeCount * (m_Strength / 10f);
