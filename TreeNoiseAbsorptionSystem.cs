@@ -19,23 +19,22 @@ namespace TreesReduceNoisePollution
         private EntityQuery m_TreeQuery;
         private NoisePollutionSystem m_NoiseSystem;
         private int m_FrameCounter;
-
-        // Persistent array to avoid GC allocation spikes
         private NativeArray<int> m_DensityMap;
 
         private const float MAP_SIZE = 14336f;
-        private const int TEXTURE_SIZE = 256;
+        private const int TEXTURE_SIZE = 128;
 
         protected override void OnCreate()
         {
             base.OnCreate();
             m_NoiseSystem = World.GetOrCreateSystemManaged<NoisePollutionSystem>();
 
+            // m_TreeQuery looks for all adult living trees, excluding deleted and preview (Temp) ones
             m_TreeQuery = GetEntityQuery(
                 ComponentType.ReadOnly<Tree>(),
                 ComponentType.ReadOnly<Game.Objects.Transform>(),
                 ComponentType.Exclude<Deleted>(),
-                ComponentType.Exclude<Temp>()
+                ComponentType.Exclude<Game.Tools.Temp>()
             );
 
             m_DensityMap = new NativeArray<int>(TEXTURE_SIZE * TEXTURE_SIZE, Allocator.Persistent);
@@ -53,26 +52,25 @@ namespace TreesReduceNoisePollution
             if (Mod.m_Setting == null || !Mod.m_Setting.ModEnabled) return;
 
             m_FrameCounter++;
-            int interval = math.max(1, Mod.m_Setting.UpdateInterval);
-            if (m_FrameCounter % interval != 0) return;
+            if (m_FrameCounter % Mod.m_Setting.UpdateInterval != 0) return;
 
-            // Get noise map handle
-            var noiseMap = m_NoiseSystem.GetMap(false, out JobHandle noiseDeps);
+            // Get the noise map with write access (false = writeable)
+            var noiseMap = m_NoiseSystem.GetMap(false, out var noiseDeps);
 
-            // Job 1: Clear the existing density map
+            // 1. Reset Map: Uses Fast Burst MemClear
             var clearJob = new ClearDensityJob { m_Density = m_DensityMap };
-            JobHandle clearHandle = clearJob.Schedule(m_DensityMap.Length, 64, Dependency);
+            var clearHandle = clearJob.Schedule(Dependency);
 
-            // Job 2: Count trees across all CPU cores (Atomic)
-            var countJob = new CountTreesParallelJob
+            // 2. Count Trees: Parallelized using Atomic Atomics
+            var countJob = new CountTreesJob
             {
                 m_Density = m_DensityMap,
                 m_MapSize = MAP_SIZE,
                 m_Size = TEXTURE_SIZE
             };
-            JobHandle countHandle = countJob.ScheduleParallel(m_TreeQuery, JobHandle.CombineDependencies(clearHandle, noiseDeps));
+            var countHandle = countJob.ScheduleParallel(m_TreeQuery, clearHandle);
 
-            // Job 3: Apply the noise reduction math
+            // 3. Apply Reduction: Distributed across all CPU cores
             var applyJob = new ApplyReductionJob
             {
                 m_Noise = noiseMap,
@@ -81,65 +79,79 @@ namespace TreesReduceNoisePollution
                 m_Mode = Mod.m_Setting.ReductionMode
             };
 
-            Dependency = applyJob.Schedule(m_DensityMap.Length, 64, countHandle);
+            JobHandle combinedDeps = JobHandle.CombineDependencies(countHandle, noiseDeps);
+            
+            // Scheduling as ParallelFor with batch size of 64 for smoothness
+            Dependency = applyJob.Schedule(noiseMap.Length, 64, combinedDeps);
+            
+            // Signal to the engine that we are modifying the noise data
+            m_NoiseSystem.AddReader(Dependency);
         }
 
         [BurstCompile]
-        struct ClearDensityJob : IJobParallelFor
+        public struct ClearDensityJob : IJob
         {
             public NativeArray<int> m_Density;
-            public void Execute(int index) => m_Density[index] = 0;
+            public unsafe void Execute()
+            {
+                UnsafeUtility.MemClear(m_Density.GetUnsafePtr(), m_Density.Length * sizeof(int));
+            }
         }
 
         [BurstCompile]
-        public partial struct CountTreesParallelJob : IJobEntity
+        public partial struct CountTreesJob : IJobEntity
         {
             [NativeDisableContainerSafetyRestriction]
             public NativeArray<int> m_Density;
             public float m_MapSize;
             public int m_Size;
 
-            public unsafe void Execute(in Game.Objects.Transform transform)
+            public unsafe void Execute(in Game.Objects.Transform transform, in Tree tree)
             {
+                // Logic: Only adult, living trees absorb noise
+                if ((tree.m_State & TreeState.Dead) != 0 || (tree.m_State & TreeState.Adult) == 0)
+                    return;
+
                 float3 pos = transform.m_Position;
                 float cellSize = m_MapSize / m_Size;
+                int x = (int)((pos.x + m_MapSize * 0.5f) / cellSize);
+                int z = (int)((pos.z + m_MapSize * 0.5f) / cellSize);
 
-                int x = (int)math.floor((pos.x + m_MapSize * 0.5f) / cellSize);
-                int z = (int)math.floor((pos.z + m_MapSize * 0.5f) / cellSize);
-
-                if ((uint)x < m_Size && (uint)z < m_Size)
+                if ((uint)x < (uint)m_Size && (uint)z < (uint)m_Size)
                 {
                     int index = x + (z * m_Size);
-                    // Optimized atomic addition for multithreading
-                    Interlocked.Add(ref ((int*)m_Density.GetUnsafePtr())[index], 1);
+                    
+                    // ATOMIC: Thread-safe incrementing for high performance
+                    int* ptr = (int*)m_Density.GetUnsafePtr();
+                    Interlocked.Increment(ref ptr[index]);
                 }
             }
         }
 
         [BurstCompile]
-        struct ApplyReductionJob : IJobParallelFor
+        public struct ApplyReductionJob : IJobParallelFor
         {
             public NativeArray<NoisePollution> m_Noise;
             [ReadOnly] public NativeArray<int> m_Density;
             public int m_Strength;
             public int m_Mode;
 
-            public void Execute(int index)
+            public void Execute(int i)
             {
-                int treeCount = m_Density[index];
+                int treeCount = m_Density[i % m_Density.Length];
                 if (treeCount <= 0) return;
 
-                NoisePollution data = m_Noise[index];
-                if (data.m_PollutionTemp <= 0) return;
-
+                NoisePollution data = m_Noise[i];
+                
+                // Mode 1: Logarithmic | Mode 0: Linear
                 float reduction = (m_Mode == 1)
                     ? math.log2(treeCount + 1f) * m_Strength
-                    : treeCount * m_Strength;
+                    : treeCount * (m_Strength / 10f);
 
-                int result = math.max(0, (int)data.m_PollutionTemp - (int)math.round(reduction));
-
-                data.m_PollutionTemp = (short)math.clamp(result, 0, 32767);
-                m_Noise[index] = data;
+                int currentPollution = (int)data.m_PollutionTemp;
+                data.m_PollutionTemp = (short)math.max(0, currentPollution - (int)reduction);
+                
+                m_Noise[i] = data;
             }
         }
     }

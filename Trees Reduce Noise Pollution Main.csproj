@@ -4,31 +4,25 @@
     <Configurations>Debug;Release</Configurations>
     <TargetFramework>net6.0</TargetFramework>
     <SubsId>143732</SubsId>
-
     <PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
-
     <AssemblyName>TreesReduceNoisePollution</AssemblyName>
     <RootNamespace>TreesReduceNoisePollution</RootNamespace>
-
-    <!-- FIX FOR CS0227: Allows the use of pointers for high-performance atomic addition -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
-    <!-- OPTIONAL: Helps Visual Studio handle the Unity Source Generators for IJobEntity -->
     <LangVersion>latest</LangVersion>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\version.txt').Trim())</Version>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="version.txt" />
-  </ItemGroup>
-
   <Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.props" />
   <Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.targets" />
+
+  <ItemGroup>
+    <None Include="version.txt" />
+    <None Include="$(ModPropsFile)" Link="Properties\Mod.props" />
+    <None Include="$(ModTargetsFile)" Link="Properties\Mod.targets" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Game" Private="false" />
@@ -38,10 +32,10 @@
     <Reference Include="Colossal.Localization" Private="false" />
     <Reference Include="Colossal.UI" Private="false" />
     <Reference Include="Colossal.UI.Binding" Private="false" />
+
     <Reference Include="Unity.Burst" Private="false" />
     <Reference Include="Unity.Collections" Private="false" />
     <Reference Include="Unity.Entities" Private="false" />
-    <Reference Include="Unity.Jobs" Private="false" />
     <Reference Include="Unity.Mathematics" Private="false" />
     <Reference Include="UnityEngine.CoreModule" Private="false" />
     <Reference Include="Unity.InputSystem" Private="false" />
@@ -54,33 +48,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(ModPropsFile)" Link="Properties\Mod.props" />
-    <None Include="$(ModTargetsFile)" Link="Properties\Mod.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="lang\de-DE.json">
+    <None Remove="lang\en-US.json" />
+    <EmbeddedResource Include="lang\en-US.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\en-US.json">
+    </EmbeddedResource>
+    <None Remove="lang\de-DE.json" />
+    <EmbeddedResource Include="lang\de-DE.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\fr-FR.json">
+    </EmbeddedResource>
+    <None Remove="lang\fr-FR.json" />
+    <EmbeddedResource Include="lang\fr-FR.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="lang\zh-HANS.json">
+    </EmbeddedResource>
+    <None Remove="lang\zh-HANS.json" />
+    <EmbeddedResource Include="lang\zh-HANS.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
   </ItemGroup>
 
   <Target Name="FinalizePublishMetadata" BeforeTargets="Publish" Condition="'$(Configuration)' == 'Release'">
-
     <PropertyGroup>
       <CurrentVersion>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\version.txt').Trim())</CurrentVersion>
       <Major>$(CurrentVersion.Split('.')[0])</Major>
       <Minor>$(CurrentVersion.Split('.')[1])</Minor>
       <Patch>$(CurrentVersion.Split('.')[2])</Patch>
-
       <NewPatch>$([MSBuild]::Add($(Patch), 1))</NewPatch>
       <NewVersion>$(Major).$(Minor).$(NewPatch)</NewVersion>
     </PropertyGroup>
@@ -89,7 +80,6 @@
     <Message Importance="high" Text="🔼 Version bumped to $(NewVersion)" />
 
     <WriteLinesToFile File="$(PublishConfigurationPath)" Lines="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText('$(PublishConfigurationPath)')), '&lt;ModVersion Value=&quot;.*?&quot; /&gt;', '&lt;ModVersion Value=&quot;$(NewVersion)&quot; /&gt;'))" Overwrite="true" />
-
     <Message Importance="high" Text="✅ Synced $(PublishConfigurationPath) to version $(NewVersion)" />
   </Target>
 

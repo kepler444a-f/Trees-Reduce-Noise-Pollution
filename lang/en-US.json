@@ -1,14 +1,27 @@
 {
-  "Options.SECTION[TreesReduceNoisePollution.Setting.Main]": "Main",
-  "Options.GROUP[TreesReduceNoisePollution.Setting.General]": "General Settings",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "Enable Mod",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "Enables tree-based noise reduction.",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "Reduction Strength",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "How much noise each tree absorbs.",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "Reduction Calculation",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "Linear: Simple subtraction. Realistic: Diminishing returns.",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][0]": "Linear",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][1]": "Realistic (Logarithmic)",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "Update Interval (Frames)",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "Higher values improve performance."
+  "Options.SECTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.Main]": "Trees Reduce Noise",
+  "Options.GROUP[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.General]": "General Settings",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ModEnabled]": "Mod Enabled",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ModEnabled]": "Enable or disable noise reduction from trees.",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.TreeNoiseStrength]": "Tree Noise Strength",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.TreeNoiseStrength]": "How much noise each tree absorbs (Percentage).",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode]": "Reduction Mode",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode]": "Linear (Flat) vs Realistic (Logarithmic) curves.",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode.0]": "Linear",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode.1]": "Realistic",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius]": "Catchment Radius",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius]": "How far the noise reduction spreads. Larger radius creates smoother gradients.",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.0]": "Zero (Point Effect)",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.1]": "8 Cells (Small Radius)",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.2]": "24 Cells (Large Radius)",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.UpdateInterval]": "Update Interval",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.UpdateInterval]": "Frequency of updates in frames (Lower is smoother but heavier on CPU).",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.VerboseLogging]": "Verbose Logging",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.VerboseLogging]": "Enables detailed debug info in the game log."
 }

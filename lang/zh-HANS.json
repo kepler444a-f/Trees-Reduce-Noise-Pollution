@@ -1,14 +1,27 @@
 {
-  "Options.SECTION[TreesReduceNoisePollution.Setting.Main]": "主菜单",
-  "Options.GROUP[TreesReduceNoisePollution.Setting.General]": "常规设置",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "启用模组",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ModEnabled]": "启用树木降噪功能。",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "降噪强度",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.TreeNoiseStrength]": "每棵树吸收的噪音量。",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "计算模式",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.ReductionMode]": "线性：简单减法。真实：递减收益。",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][0]": "线性",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.ReductionMode][1]": "真实（对数）",
-  "Options.OPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "更新间隔（帧）",
-  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.Setting.UpdateInterval]": "数值越高，性能越好。"
+  "Options.SECTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.Main]": "树木减少噪音",
+  "Options.GROUP[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.General]": "常规设置",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ModEnabled]": "启用模组",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ModEnabled]": "启用或禁用树木的降噪功能。",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.TreeNoiseStrength]": "降噪强度",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.TreeNoiseStrength]": "每棵树吸收噪音的程度（百分比）。",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode]": "降噪模式",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode]": "线性与现实（对数）曲线。",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode.0]": "线性",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.ReductionMode.1]": "现实",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius]": "影响范围",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius]": "降噪效果扩散的距离。半径越大，过渡越平滑。",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.0]": "零 (单点效果)",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.1]": "8 格 (小半径)",
+  "Options.VALUE[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.BleedRadius.2]": "24 格 (大半径)",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.UpdateInterval]": "更新间隔",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.UpdateInterval]": "以帧为单位的更新频率（越低越平滑）。",
+
+  "Options.OPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.VerboseLogging]": "详细日志",
+  "Options.OPTION_DESCRIPTION[TreesReduceNoisePollution.TreesReduceNoisePollution.Mod.Setting.VerboseLogging]": "在游戏日志中启用详细的调试信息。"
 }

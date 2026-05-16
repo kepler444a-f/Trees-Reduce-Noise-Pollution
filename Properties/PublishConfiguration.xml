@@ -1,61 +1,77 @@
 <Publish>
+  <!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
   <ModId Value="143732" />
+  <!--Name of the mod to display to players-->
   <DisplayName Value="Trees Reduce Noise Pollution" />
-  <AssemblyName Value="TreesReduceNoisePollution" />
+  <!--Short description of the mod-->
   <ShortDescription Value="Trees dynamically absorb noise pollution." />
+  <!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
+  <LongDescription><![CDATA[# What Does this Mod do?
 
-  <LongDescription>
-    <![CDATA[# What Does this Mod do?
-This mod allows you to customise the effect trees have on Noise Pollution. While this is already a base game feature, the vanilla system uses a fairly weak logarithmic calculation. This mod replaces that with a **fully customisable system** through the Mod Menu.
+  This mod allows you to customise the effect trees have on Noise Pollution. While this is already a base game feature, the vanilla system uses a fairly weak logarithmic calculation. This mod replaces that with a **fully customisable system** through the Mod Menu.
 
----
+  # How the Math Works
 
-# How the Math Works
-The mod processes noise reduction using two distinct mathematical models that you can swap between in the settings:
+  The mod processes noise reduction using two distinct mathematical models that you can swap between in the settings:
 
-### 1. Linear Mode (Default)
-This mode treats every tree as an equal contributor to noise reduction. It is best for players who want a significant, noticeable impact from every single sapling planted.
-* **Formula:** $$R = N_{trees} \times S_{strength}$$
-* **Result:** 10 trees provide exactly 10x the reduction of 1 tree.
+  ## 1. Linear Mode (Default)
 
-### 2. Realistic Mode (Logarithmic)
-In reality, noise absorption follows a "diminishing returns" curve. The first few trees do the most heavy lifting, and as the forest gets denser, each additional tree adds slightly less benefit.
-* **Formula:** $$R = \log_{2}(N_{trees} + 1) \times S_{strength}$$
-* **Result:** Large forests still provide massive relief, but prevent the system from reaching "zero noise" too easily, maintaining a more grounded simulation.
+  This mode treats every tree as an equal contributor to noise reduction. It is best for players who want a significant, noticeable impact from every single sapling planted.
 
----
+  * Formula: R = N_trees * S_strength
+  * Result: 10 trees provide exactly 10x the reduction of 1 tree.
 
-# How does this Mod work?
-The mod utilizes the **Unity Job System** and **Burst Compiler** to stay highly optimized. It maps the coordinates of every tree on the map ($14336m$) onto a $256 \times 256$ grid. It then calculates the tree density per "cell" and subtracts the calculated reduction directly from the game's noise pollution buffer:
-$$P_{final} = \max(0, P_{temp} - R)$$
+  ## 2. Realistic Mode (Logarithmic)
 
----
+  In reality, noise absorption follows a diminishing returns curve. The first few trees do the most heavy lifting, and as the forest gets denser, each additional tree adds slightly less benefit.
 
-# Planned Future Features
-* Species-specific noise absorption (fully customisable).
-* Age-specific noise absorption (fully customisable).
-* Further performance and optimisation improvements.
+  * Formula: R = log2(N_trees + 1) * S_strength
+  * Result: Large forests still provide massive relief, but prevent the system from reaching zero noise too easily.
 
----
+  # How does this Mod work?
 
-# Support & Feedback
-Thank you for downloading the mod! If you encounter any issues, please feel free to let me know in the forum thread. 
+  The mod utilizes the **Unity Job System** and **Burst Compiler** to stay highly optimized. It maps the coordinates of every tree on the map onto a 256 x 256 grid. It then calculates the tree density per cell and subtracts the calculated reduction directly from the game noise pollution buffer.
 
-**Log File Location:**
-C:\Users\%UserName%\AppData\LocalLow\Colossal Order\Cities Skylines II\Logs\TreesReduceNoisePollution.log
+  # Planned Future Features
 
-If you have any suggestions or feedback, feel free to leave a comment. <3]]>
+  * Species-specific noise absorption (fully customisable).
+  * Age-specific noise absorption (fully customisable).
+  * Further performance and optimisation improvements.
+
+  # Support And Feedback
+
+  Thank you for downloading the mod! If you encounter any issues, please feel free to let me know in the forum thread.
+
+  Log File Location:
+  C:\Users\%UserName%\AppData\LocalLow\Colossal Order\Cities Skylines II\Logs\TreesReduceNoisePollution.log]]>
   </LongDescription>
-
+  <!--Thumbnail-->
   <Thumbnail Value="Properties/Thumbnail.png" />
-  <Screenshot Value="" />
+  <!--Screenshot, can be set multiple times-->
+  <Screenshot Value="Properties/1.jpg" />
+  <Screenshot Value="Properties/2.jpg" />
+  <Screenshot Value="Properties/3.jpg" />
+  <Screenshot Value="Properties/4.jpg" />
+  <Screenshot Value="Properties/5.png" />
+  <Screenshot Value="Properties/6.png" />
+  <!--Tag, can be set multiple times-->
   <Tag Value="Code Mod" />
+  <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/treereducenoise-development.1921144/" />
-  <ModVersion Value="3.0.29" />
+  <!--Version of the mod-->
+  <ModVersion Value="3.0.62" />
+  <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
-
-  <ChangeLog>
-    Fixed the Bug with no showing Log system.
-  </ChangeLog>
+  <!--Dependency for the mod, can be set multiple times-->
+  <!--Dependency Id="" /-->
+  <!--Required DLC, can be set multiple times.-->
+  <!--RequiredDLC Value="" /-->
+  <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
+  <ChangeLog Value="Released Source Code on GitHub" />
+  <ChangeLog Value="Testing Resolution with Rider Publish Solution" />
+  <!--External link, can be set multiple times.-->
+  <!--ExternalLink Type="" Url="" /-->
+  <ExternalLink Type="GitHub" Url="https://github.com/kepler444a-f/Trees-Reduce-Noise-Pollution" />
+  <!--Supported values Public, Private, Unlisted-->
   <AccessLevel Value="Public" />
 </Publish>
